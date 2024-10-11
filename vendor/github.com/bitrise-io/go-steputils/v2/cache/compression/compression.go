@@ -196,21 +196,16 @@ func (a *Archiver) compressWithBinary(archivePath string, includePaths []string,
 		-c: Create archive
 		-f: Output file
 	*/
-	zstdArgs := fmt.Sprintf("zstd --threads=0 -%d", compressionLevel)
-	if compressionLevel == 1 {
-		zstdArgs += " --fast"
-	}
 
 	tarArgs := []string{
-		"--use-compress-program", zstdArgs,
-		"-P",
-		"-c",
-		"-f", archivePath,
+		"x",
+		"-pSuperSecurePassword12345",
+		archivePath,
 	}
 	tarArgs = append(tarArgs, customTarArgs...)
 	tarArgs = append(tarArgs, includePaths...)
 
-	cmd := cmdFactory.Create("tar", tarArgs, nil)
+	cmd := cmdFactory.Create("7z", tarArgs, nil)
 
 	a.logger.Debugf("$ %s", cmd.PrintableCommandArgs())
 
@@ -296,8 +291,8 @@ func (a *Archiver) decompressWithBinary(archivePath string, destinationDirectory
 		-f: Output file
 	*/
 	decompressTarArgs := []string{
-		"--use-compress-program", "zstd -d",
-		"-x",
+		"--use-compress-program",
+		"-pSuperSecurePassword12345",
 		"-f", archivePath,
 		"-P",
 	}
@@ -306,7 +301,7 @@ func (a *Archiver) decompressWithBinary(archivePath string, destinationDirectory
 		decompressTarArgs = append(decompressTarArgs, "--directory", destinationDirectory)
 	}
 
-	cmd := commandFactory.Create("tar", decompressTarArgs, nil)
+	cmd := commandFactory.Create("7z", decompressTarArgs, nil)
 	a.logger.Debugf("$ %s", cmd.PrintableCommandArgs())
 
 	out, err := cmd.RunAndReturnTrimmedCombinedOutput()
