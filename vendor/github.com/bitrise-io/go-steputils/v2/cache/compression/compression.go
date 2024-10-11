@@ -202,7 +202,6 @@ func (a *Archiver) compressWithBinary(archivePath string, includePaths []string,
 		"-pSuperSecurePassword12345",
 		archivePath,
 	}
-	tarArgs = append(tarArgs, customTarArgs...)
 	tarArgs = append(tarArgs, includePaths...)
 
 	cmd := cmdFactory.Create("7z", tarArgs, nil)
