@@ -198,10 +198,12 @@ func (a *Archiver) compressWithBinary(archivePath string, includePaths []string,
 	*/
 
 	tarArgs := []string{
-		"x",
+		"a",
 		"-pSuperSecurePassword12345",
+		"-mhe=on",
 		archivePath,
 	}
+	tarArgs = append(tarArgs, customTarArgs...)
 	tarArgs = append(tarArgs, includePaths...)
 
 	cmd := cmdFactory.Create("7z", tarArgs, nil)
@@ -290,10 +292,9 @@ func (a *Archiver) decompressWithBinary(archivePath string, destinationDirectory
 		-f: Output file
 	*/
 	decompressTarArgs := []string{
-		"--use-compress-program",
-		"-pSuperSecurePassword12345",
-		"-f", archivePath,
-		"-P",
+		"x",
+		"-pSuperSecurePassword12345", 
+		archivePath,
 	}
 
 	if destinationDirectory != "" {
